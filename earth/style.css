@@ -1,0 +1,108 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+}
+
+h2 {
+    color: #D81B60;
+    margin-bottom: 10px;
+}
+
+.instructions {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.exercise-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.labels {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.draggable {
+    background-color: #D81B60;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: grab;
+    user-select: none;
+}
+
+.draggable:active {
+    cursor: grabbing;
+}
+
+.image-container {
+    position: relative;
+    width: 600px;
+    max-width: 90%;
+    border: 2px solid #D81B60;
+    background-color: white;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.dropzone {
+    position: absolute;
+    width: 18%;
+    height: 6%;
+    border: 2px dashed transparent;
+    text-align: center;
+    line-height: 30px;
+    font-size: 14px;
+    color: transparent;
+    /* Hide label by default */
+    transition: border-color 0.3s ease;
+}
+
+.dropzone.hovered {
+    border-color: #D81B60;
+    /* Highlight when dragging over */
+    color: #000000;
+    /* Show label text when hovered */
+}
+
+/* Correct positions of drop zones */
+#drop-polnord {
+    top: 27%;
+    left: 78%;
+}
+
+#drop-hemnord {
+    top: 35%;
+    left: 78%;
+}
+
+#drop-equador {
+    top: 50%;
+    left: 65%;
+}
+
+#drop-hemsud {
+    top: 58%;
+    left: 65%;
+}
+
+#drop-polsud {
+    top: 70%;
+    left: 61%;
+}
+
+#drop-eix {
+    top: 10%;
+    left: 80%;
+}

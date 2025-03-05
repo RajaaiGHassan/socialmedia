@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formas Geométricas 3D</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://unpkg.com/p5.easycam"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+        }
+        #canvas-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60vh;
+        }
+        .info {
+            font-size: 16px;
+            margin-top: 10px;
+            color: #bbb;
+        }
+        select {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: none;
+            background: #1e1e1e;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Selecciona una forma geométrica 3D</h1>
+    <select id="shapeSelector" onchange="redraw()">
+        <option value="sphere">Esfera</option>
+        <option value="cube">Cubo</option>
+        <option value="pyramid">Pirámide</option>
+        <option value="pentagonalPrism">Prisma Pentagonal</option>
+    </select>
+    
+    <div class="info" id="shapeInfo"></div>
+    <div id="canvas-container"></div>
+    
+    <script>
+        let easycam;
+        let angleX = 0;
+        let angleY = 0;
+
+        function setup() {
+            let canvas = createCanvas(350, 350, WEBGL);
+            canvas.parent("canvas-container");
+            easycam = new Dw.EasyCam(this._renderer, {distance: 250});
+            redraw();
+        }
+
+        function draw() {
+            background(0);
+            rotateX(angleX);
+            rotateY(angleY);
+            angleX += 0.01;
+            angleY += 0.01;
+            drawShape();
+        }
+
+        function drawShape() {
+            let shape = document.getElementById("shapeSelector").value;
+            let info = document.getElementById("shapeInfo");
+            
+            normalMaterial();
+            stroke(255);
+
+            if (shape === "sphere") {
+                sphere(60);
+                info.innerHTML = "Una <b>esfera</b> es un sólido geométrico en el que todos los puntos de la superficie están a la misma distancia del centro.";
+            } else if (shape === "cube") {
+                box(90);
+                info.innerHTML = "Un <b>cubo</b> tiene seis caras cuadradas y todos sus ángulos son de 90 grados.";
+            } else if (shape === "pyramid") {
+                drawPyramid();
+                info.innerHTML = "Una <b>pirámide</b> tiene una base y caras triangulares que convergen en un vértice.";
+            } else if (shape === "pentagonalPrism") {
+                drawPentagonalPrism();
+                info.innerHTML = "Un <b>prisma pentagonal</b> tiene dos bases pentagonales y caras rectangulares.";
+            }
+        }
+
+        function drawPyramid() {
+            beginShape();
+            vertex(-40, 40, 40);
+            vertex(40, 40, 40);
+            vertex(0, -40, 0);
+            vertex(40, 40, -40);
+            vertex(-40, 40, -40);
+            vertex(0, -40, 0);
+            vertex(-40, 40, 40);
+            vertex(-40, 40, -40);
+            vertex(0, -40, 0);
+            vertex(40, 40, 40);
+            vertex(40, 40, -40);
+            vertex(0, -40, 0);
+            endShape(CLOSE);
+        }
+
+        function drawPentagonalPrism() {
+            beginShape();
+            for (let i = 0; i < 5; i++) {
+                let angle = TWO_PI * i / 5;
+                let xOffset = cos(angle) * 40;
+                let yOffset = sin(angle) * 40;
+                vertex(xOffset, yOffset, -40);
+            }
+            endShape(CLOSE);
+            beginShape();
+            for (let i = 0; i < 5; i++) {
+                let angle = TWO_PI * i / 5;
+                let xOffset = cos(angle) * 40;
+                let yOffset = sin(angle) * 40;
+                vertex(xOffset, yOffset, 40);
+            }
+            endShape(CLOSE);
+        }
+    </script>
+</body>
+</html>

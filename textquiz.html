@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura y Quiz</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #222;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #333;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: #f0f0f0;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="reading-container">
+        <h2>Historia Corta</h2>
+        <p>Había una vez un niño llamado Pedro, que vivía en un pequeño pueblo. Pedro era muy curioso y le encantaba explorar el bosque cercano. Un día, encontró una cueva misteriosa y decidió entrar. Dentro, descubrió un cofre lleno de libros mágicos que contaban historias sobre aventuras increíbles. Desde ese día, Pedro compartió los cuentos con todos en su pueblo, y así, la magia de la lectura se extendió a todos.</p>
+        <button onclick="startQuiz()">Comenzar el Quiz</button>
+    </div>
+    
+    <div class="container hidden" id="quiz-container">
+        <h2>Quiz</h2>
+        <p id="quiz-question"></p>
+        <select id="quiz-options"></select>
+        <button onclick="checkAnswer()">Verificar</button>
+        <p id="quiz-result"></p>
+        <button onclick="nextQuestion()" class="hidden" id="next-btn">Siguiente</button>
+        <p id="final-score" class="hidden"></p>
+    </div>
+    
+    <script>
+        const questions = [
+            { 
+                question: "¿Dónde vivía Pedro?", 
+                options: ["En una ciudad", "En un pueblo", "En el bosque", "En una cueva"],
+                answer: "En un pueblo"
+            },
+            {
+                question: "¿Qué encontró Pedro en la cueva?",
+                options: ["Un tesoro", "Un cofre con libros", "Un mapa", "Un dragón"],
+                answer: "Un cofre con libros"
+            },
+            {
+                question: "¿Qué hacían los libros que encontró Pedro?",
+                options: ["Hablaban", "Eran mágicos", "Se quemaban", "Eran invisibles"],
+                answer: "Eran mágicos"
+            },
+            {
+                question: "¿Qué hizo Pedro con los cuentos?",
+                options: ["Los escondió", "Los leyó solo", "Los compartió", "Los vendió"],
+                answer: "Los compartió"
+            }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        
+        function startQuiz() {
+            document.getElementById("reading-container").classList.add("hidden");
+            document.getElementById("quiz-container").classList.remove("hidden");
+            loadQuestion();
+        }
+        
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showFinalScore();
+                return;
+            }
+            let questionElement = document.getElementById("quiz-question");
+            let optionsElement = document.getElementById("quiz-options");
+            optionsElement.innerHTML = "";
+            
+            let currentQuestion = questions[currentQuestionIndex];
+            questionElement.innerText = currentQuestion.question;
+            
+            currentQuestion.options.forEach(option => {
+                let optionElement = document.createElement("option");
+                optionElement.value = option;
+                optionElement.innerText = option;
+                optionsElement.appendChild(optionElement);
+            });
+            
+            document.getElementById("quiz-result").innerHTML = "";
+            document.getElementById("next-btn").classList.add("hidden");
+        }
+        
+        function checkAnswer() {
+            let selectedAnswer = document.getElementById("quiz-options").value;
+            let resultElement = document.getElementById("quiz-result");
+            
+            if (selectedAnswer === questions[currentQuestionIndex].answer) {
+                resultElement.innerHTML = "✅ ¡Correcto!";
+                resultElement.style.color = "#4CAF50";
+                score++;
+            } else {
+                resultElement.innerHTML = "❌ Incorrecto. Intenta de nuevo.";
+                resultElement.style.color = "#FF5733";
+            }
+            
+            document.getElementById("next-btn").classList.remove("hidden");
+        }
+        
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+        
+        function showFinalScore() {
+            document.getElementById("quiz-question").style.display = "none";
+            document.getElementById("quiz-options").style.display = "none";
+            document.querySelector("button").style.display = "none";
+            document.getElementById("next-btn").style.display = "none";
+            
+            let finalScoreElement = document.getElementById("final-score");
+            finalScoreElement.innerHTML = `Tu puntuación final es: ${score}/${questions.length}`;
+            finalScoreElement.classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura y Quiz</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #222;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #333;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: #f0f0f0;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="reading-container">
+        <h2>Historia Corta</h2>
+        <p>Había una vez un niño llamado Pedro, que vivía en un pequeño pueblo. Pedro era muy curioso y le encantaba explorar el bosque cercano. Un día, encontró una cueva misteriosa y decidió entrar. Dentro, descubrió un cofre lleno de libros mágicos que contaban historias sobre aventuras increíbles. Desde ese día, Pedro compartió los cuentos con todos en su pueblo, y así, la magia de la lectura se extendió a todos.</p>
+        <button onclick="startQuiz()">Comenzar el Quiz</button>
+    </div>
+    
+    <div class="container hidden" id="quiz-container">
+        <h2>Quiz</h2>
+        <p id="quiz-question"></p>
+        <select id="quiz-options"></select>
+        <button onclick="checkAnswer()">Verificar</button>
+        <p id="quiz-result"></p>
+        <button onclick="nextQuestion()" class="hidden" id="next-btn">Siguiente</button>
+        <p id="final-score" class="hidden"></p>
+    </div>
+    
+    <script>
+        const questions = [
+            { 
+                question: "¿Dónde vivía Pedro?", 
+                options: ["En una ciudad", "En un pueblo", "En el bosque", "En una cueva"],
+                answer: "En un pueblo"
+            },
+            {
+                question: "¿Qué encontró Pedro en la cueva?",
+                options: ["Un tesoro", "Un cofre con libros", "Un mapa", "Un dragón"],
+                answer: "Un cofre con libros"
+            },
+            {
+                question: "¿Qué hacían los libros que encontró Pedro?",
+                options: ["Hablaban", "Eran mágicos", "Se quemaban", "Eran invisibles"],
+                answer: "Eran mágicos"
+            },
+            {
+                question: "¿Qué hizo Pedro con los cuentos?",
+                options: ["Los escondió", "Los leyó solo", "Los compartió", "Los vendió"],
+                answer: "Los compartió"
+            }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        
+        function startQuiz() {
+            document.getElementById("reading-container").classList.add("hidden");
+            document.getElementById("quiz-container").classList.remove("hidden");
+            loadQuestion();
+        }
+        
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showFinalScore();
+                return;
+            }
+            let questionElement = document.getElementById("quiz-question");
+            let optionsElement = document.getElementById("quiz-options");
+            optionsElement.innerHTML = "";
+            
+            let currentQuestion = questions[currentQuestionIndex];
+            questionElement.innerText = currentQuestion.question;
+            
+            currentQuestion.options.forEach(option => {
+                let optionElement = document.createElement("option");
+                optionElement.value = option;
+                optionElement.innerText = option;
+                optionsElement.appendChild(optionElement);
+            });
+            
+            document.getElementById("quiz-result").innerHTML = "";
+            document.getElementById("next-btn").classList.add("hidden");
+        }
+        
+        function checkAnswer() {
+            let selectedAnswer = document.getElementById("quiz-options").value;
+            let resultElement = document.getElementById("quiz-result");
+            
+            if (selectedAnswer === questions[currentQuestionIndex].answer) {
+                resultElement.innerHTML = "✅ ¡Correcto!";
+                resultElement.style.color = "#4CAF50";
+                score++;
+            } else {
+                resultElement.innerHTML = "❌ Incorrecto. Intenta de nuevo.";
+                resultElement.style.color = "#FF5733";
+            }
+            
+            document.getElementById("next-btn").classList.remove("hidden");
+        }
+        
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+        
+        function showFinalScore() {
+            document.getElementById("quiz-question").style.display = "none";
+            document.getElementById("quiz-options").style.display = "none";
+            document.querySelector("button").style.display = "none";
+            document.getElementById("next-btn").style.display = "none";
+            
+            let finalScoreElement = document.getElementById("final-score");
+            finalScoreElement.innerHTML = `Tu puntuación final es: ${score}/${questions.length}`;
+            finalScoreElement.classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>

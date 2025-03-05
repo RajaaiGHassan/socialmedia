@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Sinónimos</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #222;
+        }
+        .quiz-container {
+            width: 80%;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #333;
+        }
+        select, button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: #f0f0f0;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #quiz-result, #final-score {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h2>Quiz de Sinónimos</h2>
+        <p id="quiz-question"></p>
+        <select id="quiz-options"></select>
+        <button onclick="checkAnswer()">Verificar</button>
+        <p id="quiz-result"></p>
+        <p id="final-score" style="display: none;"></p>
+    </div>
+    
+    <script>
+        const questions = [
+            { 
+                question: "Selecciona el sinónimo correcto de 'feliz'", 
+                options: ["Triste", "Alegre", "Enojado", "Cansado"],
+                answer: "Alegre"
+            },
+            {
+                question: "Selecciona el sinónimo correcto de 'rápido'",
+                options: ["Veloz", "Lento", "Pesado", "Débil"],
+                answer: "Veloz"
+            },
+            {
+                question: "Selecciona el sinónimo correcto de 'hermoso'",
+                options: ["Feo", "Bello", "Oscuro", "Pequeño"],
+                answer: "Bello"
+            },
+            {
+                question: "Selecciona el sinónimo correcto de 'grande'",
+                options: ["Enorme", "Pequeño", "Fino", "Angosto"],
+                answer: "Enorme"
+            }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showFinalScore();
+                return;
+            }
+            let questionElement = document.getElementById("quiz-question");
+            let optionsElement = document.getElementById("quiz-options");
+            optionsElement.innerHTML = "";
+            
+            let currentQuestion = questions[currentQuestionIndex];
+            questionElement.innerText = currentQuestion.question;
+            
+            currentQuestion.options.forEach(option => {
+                let optionElement = document.createElement("option");
+                optionElement.value = option;
+                optionElement.innerText = option;
+                optionsElement.appendChild(optionElement);
+            });
+        }
+        
+        function checkAnswer() {
+            let selectedAnswer = document.getElementById("quiz-options").value;
+            let resultElement = document.getElementById("quiz-result");
+            
+            if (selectedAnswer === questions[currentQuestionIndex].answer) {
+                resultElement.innerHTML = "✅ ¡Correcto!";
+                resultElement.style.color = "#4CAF50";
+                score++;
+            } else {
+                resultElement.innerHTML = "❌ Incorrecto. Intenta de nuevo.";
+                resultElement.style.color = "#FF5733";
+            }
+            
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+                resultElement.innerHTML = "";
+            }, 1000);
+        }
+        
+        function showFinalScore() {
+            document.getElementById("quiz-question").style.display = "none";
+            document.getElementById("quiz-options").style.display = "none";
+            document.querySelector("button").style.display = "none";
+            
+            let finalScoreElement = document.getElementById("final-score");
+            finalScoreElement.innerHTML = `Tu puntuación final es: ${score}/${questions.length}`;
+            finalScoreElement.style.display = "block";
+        }
+        
+        loadQuestion();
+    </script>
+</body>
+</html>

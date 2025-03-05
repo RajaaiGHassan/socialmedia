@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive HTML iFrame Feed</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #fafafa;
+        }
+
+        /* Fixed header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 50px;
+            background: #fff;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            z-index: 1000;
+        }
+
+        .header .brand {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .header .user-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+
+        /* Feed container */
+        .feed {
+            max-width: 800px;
+            margin: 60px auto 20px;
+            padding: 0 10px;
+        }
+
+        /* Post card styling */
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            justify-content: flex-start;
+            /* Ensure elements align to the left */
+            gap: 10px;
+            /* Add spacing between profile image and username */
+
+            position: relative;
+            overflow: hidden;
+            /* Prevents content from shifting */
+        }
+
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .post-header .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .post-header .username {
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+
+        .feed {
+            max-width: 900px;
+            width: 100%;
+            margin: 60px auto 20px;
+        }
+
+        .post {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+            /* Centers the posts */
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .post-content {
+            width: 100%;
+            height: 700px;
+            position: relative;
+
+        }
+
+
+        .post-content iframe {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Post actions */
+        .post-actions {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+        }
+
+        .post-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 10px;
+            font-size: 1.4em;
+        }
+
+        .post-actions .like-icon {
+            color: #333;
+            font-size: 1.6em;
+            vertical-align: middle;
+        }
+
+        .post-actions .like-icon.liked {
+            color: #E2264D;
+        }
+
+        .post-actions .like-count {
+            font-size: 0.9em;
+            color: #555;
+            margin-right: auto;
+        }
+
+        .post-actions .comment-btn {
+            font-size: 1.4em;
+        }
+
+        /* Add comment section */
+        .add-comment {
+            border-top: 1px solid #efefef;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .add-comment input[type="text"] {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: none;
+            font-size: 0.9em;
+        }
+
+        .add-comment input::placeholder {
+            color: #999;
+        }
+
+        .add-comment .submit-comment {
+            background: none;
+            border: none;
+            color: #0095f6;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+        .add-comment .submit-comment:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+
+        /* Fullscreen Overlay (hidden by default) */
+        .fullscreen-overlay {
+            display: none !important;
+            /* Ensure it starts hidden */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .fullscreen-overlay iframe {
+            width: 90%;
+            height: 90%;
+            border: none;
+            background: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 20px;
+            padding: 10px 15px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 50px;
+            /* Below header */
+            width: 250px;
+            height: 100vh;
+            background: #fff;
+            border-right: 1px solid #dbdbdb;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .sidebar .username {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .sidebar .menu {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar .menu a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 10px;
+            color: #333;
+            font-size: 1em;
+        }
+
+        .sidebar .menu a:hover {
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        .sidebar .menu span {
+            font-size: 1.3em;
+            margin-right: 10px;
+        }
+
+        .sidebar .shortcuts,
+        .sidebar .suggestions {
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .sidebar .shortcuts a,
+        .sidebar .suggested {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .sidebar .suggested img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* Adjust feed layout */
+        .feed {
+            margin-left: 260px;
+            /* Space for sidebar */
+        }
+
+
+
+
+        /* Right Sidebar */
+        .right-sidebar {
+            position: fixed;
+            right: 0;
+            top: 50px;
+            /* Below header */
+            width: 250px;
+            height: 100vh;
+            background: #fff;
+            border-left: 1px solid #dbdbdb;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        .right-sidebar h4 {
+            font-size: 1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .suggested-user {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .suggested-user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .suggested-user .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .suggested-user .username {
+            font-size: 0.95em;
+            font-weight: bold;
+        }
+
+        .suggested-user .follow-btn {
+            background: #0095f6;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s ease-in-out;
+        }
+
+        .suggested-user .follow-btn:hover {
+            background: #0077e6;
+        }
+
+        /* Adjust feed layout for spacing */
+        .feed {
+            margin-left: 260px;
+            /* Space for left sidebar */
+            margin-right: 260px;
+            /* Space for right sidebar */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Fixed Header -->
+    <header class="header">
+        <div class="brand">HTML iFrame Social</div>
+        <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Profile" class="user-icon" />
+    </header>
+
+
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="profile">
+            <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Profile" class="profile-pic" />
+            <span class="username">Your Name</span>
+        </div>
+
+        <nav class="menu">
+            <a href="#"><span>🏠</span> Home</a>
+            <a href="#"><span>🔍</span> Explore</a>
+            <a href="#"><span>🔔</span> Notifications</a>
+            <a href="#"><span>📩</span> Messages</a>
+            <a href="#"><span>⚙️</span> Settings</a>
+        </nav>
+
+        <div class="shortcuts">
+            <h4>Shortcuts</h4>
+            <a href="#">💬 Groups</a>
+            <a href="#">⭐ Saved</a>
+            <a href="#">📖 Learning</a>
+        </div>
+
+        <div class="suggestions">
+            <h4>Suggested Friends</h4>
+            <div class="suggested">
+                <img src="https://randomuser.me/api/portraits/men/12.jpg" alt="User" />
+                <span>John Doe</span>
+            </div>
+            <div class="suggested">
+                <img src="https://randomuser.me/api/portraits/women/34.jpg" alt="User" />
+                <span>Jane Smith</span>
+            </div>
+        </div>
+    </aside>
+
+
+
+
+    <!-- Right Sidebar - People You May Know -->
+    <aside class="right-sidebar">
+        <h4>People You May Know</h4>
+
+        <div class="suggested-user">
+            <img src="https://randomuser.me/api/portraits/men/21.jpg" alt="User" />
+            <div class="user-info">
+                <span class="username">David Parker</span>
+                <button class="follow-btn">Follow</button>
+            </div>
+        </div>
+
+        <div class="suggested-user">
+            <img src="https://randomuser.me/api/portraits/women/35.jpg" alt="User" />
+            <div class="user-info">
+                <span class="username">Emily Watson</span>
+                <button class="follow-btn">Follow</button>
+            </div>
+        </div>
+
+        <div class="suggested-user">
+            <img src="https://randomuser.me/api/portraits/men/56.jpg" alt="User" />
+            <div class="user-info">
+                <span class="username">Michael Smith</span>
+                <button class="follow-btn">Follow</button>
+            </div>
+        </div>
+
+        <div class="suggested-user">
+            <img src="https://randomuser.me/api/portraits/women/62.jpg" alt="User" />
+            <div class="user-info">
+                <span class="username">Sophia Lee</span>
+                <button class="follow-btn">Follow</button>
+            </div>
+        </div>
+
+    </aside>
+
+
+
+    <!-- Feed with posts -->
+    <main class="feed">
+
+
+
+
+
+
+
+        <!-- Post 2 - Solar System -->
+        <div class="post">
+            <div class="post-header">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User profile" class="profile-pic" />
+                <span class="username">john_doe</span>
+            </div>
+            <div class="post-content">
+                <iframe sandbox="allow-scripts allow-same-origin" srcdoc="
+  <!DOCTYPE html>
+  <html lang='en'>
+  <head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <script src='https://cdn.babylonjs.com/babylon.js'></script>
+    <script src='https://cdn.babylonjs.com/gui/babylon.gui.min.js'></script>
+    <style>
+      body, html { margin: 0; padding: 0; background-color: black; overflow: hidden; width: 100%; height: 100%; }
+      canvas { width: 100%; height: 100%; display: block; }
+    </style>
+  </head>
+  <body>
+    <canvas id='sceneCanvas'></canvas>
+    <script>
+      window.onload = function() {
+        const canvas = document.getElementById('sceneCanvas');
+        const engine = new BABYLON.Engine(canvas, true);
+        const scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color3(0, 0, 0);
+
+        // Camera
+        const camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 3, 160, BABYLON.Vector3.Zero(), scene);
+        camera.attachControl(canvas, true);
+        camera.wheelPrecision = 10;
+
+        // Lighting - More Realistic
+        const light = new BABYLON.PointLight('sunLight', new BABYLON.Vector3(0, 0, 0), scene);
+        light.intensity = 2.5; // Brighter light for more definition
+
+        // GUI for Labels
+        const gui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
+
+        function createLabel(mesh, name) {
+          const label = new BABYLON.GUI.TextBlock();
+          label.text = name;
+          label.color = 'white';
+          label.fontSize = 14;
+          label.fontWeight = 'bold';
+          gui.addControl(label);
+
+          scene.registerBeforeRender(() => {
+            const position = BABYLON.Vector3.Project(
+              mesh.position.add(new BABYLON.Vector3(0, 1.5, 0)), 
+              BABYLON.Matrix.Identity(),
+              scene.getTransformMatrix(),
+              camera.viewport.toGlobal(canvas.width, canvas.height)
+            );
+            label.left = (position.x - canvas.width / 2) + 'px';
+            label.top = (position.y - canvas.height / 2 - 15) + 'px';
+          });
+        }
+
+        // Sun - Bigger & More Glow
+        const sunMaterial = new BABYLON.StandardMaterial('sunMaterial', scene);
+        sunMaterial.emissiveColor = new BABYLON.Color3(1, 0.8, 0);
+        sunMaterial.diffuseColor = new BABYLON.Color3(1, 0.6, 0);
+        const sun = BABYLON.MeshBuilder.CreateSphere('sun', { diameter: 18 }, scene);
+        sun.material = sunMaterial;
+        createLabel(sun, 'Sol');
+
+        // Planets - Improved Details
+        const planetsData = [
+          { name: 'Mercurio', distance: 20, size: 1, color: '#b1b1b1', speed: 4.7, eccentricity: 0.2 },
+          { name: 'Venus', distance: 30, size: 1.4, color: '#e1c699', speed: 3.5, eccentricity: 0.1 },
+          { name: 'Tierra', distance: 42, size: 1.6, color: '#2c82c9', speed: 3, eccentricity: 0.1 },
+          { name: 'Marte', distance: 55, size: 1.2, color: '#d14e2c', speed: 2.4, eccentricity: 0.2 },
+          { name: 'Júpiter', distance: 80, size: 3.5, color: '#d9a066', speed: 1.3, eccentricity: 0.05 },
+          { name: 'Saturno', distance: 100, size: 3, color: '#e3c48f', speed: 1, eccentricity: 0.06 },
+          { name: 'Urano', distance: 120, size: 2.5, color: '#7ad2e3', speed: 0.7, eccentricity: 0.07 },
+          { name: 'Neptuno', distance: 140, size: 2.3, color: '#4965c0', speed: 0.5, eccentricity: 0.08 },
+        ];
+
+        const planetMeshes = [];
+
+        planetsData.forEach((planet) => {
+          const planetMaterial = new BABYLON.StandardMaterial(planet.name + 'Material', scene);
+          planetMaterial.diffuseColor = BABYLON.Color3.FromHexString(planet.color);
+          planetMaterial.specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+
+          const planetMesh = BABYLON.MeshBuilder.CreateSphere(planet.name, { diameter: planet.size * 2 }, scene);
+          planetMesh.material = planetMaterial;
+          planetMesh.position.x = planet.distance * (1 - planet.eccentricity);
+
+          planetMeshes.push({ mesh: planetMesh, distance: planet.distance, speed: planet.speed, eccentricity: planet.eccentricity });
+
+          createLabel(planetMesh, planet.name);
+        });
+
+        // Smooth Animation for Orbits
+        engine.runRenderLoop(() => {
+          if (scene) {
+            const time = performance.now() * 0.00005; // Slower & Smoother
+            planetMeshes.forEach(planet => {
+              const angle = time * planet.speed;
+              const newX = planet.distance * (1 - planet.eccentricity) * Math.cos(angle);
+              const newZ = planet.distance * Math.sin(angle);
+
+              // Smooth transition using lerp (Linear Interpolation)
+              planet.mesh.position.x = BABYLON.Scalar.Lerp(planet.mesh.position.x, newX, 0.1);
+              planet.mesh.position.z = BABYLON.Scalar.Lerp(planet.mesh.position.z, newZ, 0.1);
+            });
+            scene.render();
+          }
+        });
+
+        window.addEventListener('resize', () => engine.resize());
+      };
+    </script>
+  </body>
+  </html>
+"></iframe>
+
+            </div>
+            <div class="post-actions">
+                <button class="like-btn"><span class="like-icon">♡</span></button>
+                <span class="like-count">0 likes</span>
+                <button class="comment-btn">💬</button>
+            </div>
+            <div class="comments"></div>
+            <div class="add-comment">
+                <input type="text" placeholder="Add a comment..." />
+                <button class="submit-comment">Post</button>
+            </div>
+        </div>
+
+
+
+        <!-- Post 1 -  -->
+        <div class="post">
+            <div class="post-header">
+                <img src="https://randomuser.me/api/portraits/women/84.jpg" alt="User profile" class="profile-pic" />
+                <span class="username">Maria Legaz</span>
+            </div>
+            <div class="post-content">
+                <iframe src="text quiz/index.html" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+
+
+            <div class="post-actions">
+                <button class="like-btn"><span class="like-icon">♡</span></button>
+                <span class="like-count">0 likes</span>
+                <button class="comment-btn">💬</button>
+            </div>
+            <div class="comments"></div>
+            <div class="add-comment">
+                <input type="text" placeholder="Add a comment..." />
+                <button class="submit-comment">Post</button>
+            </div>
+        </div>
+
+
+
+        <!-- Post 3 - 3D Cube -->
+        <div class="post">
+            <div class="post-header">
+                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="User profile" class="profile-pic" />
+                <span class="username">alex_cube_master</span>
+            </div>
+            <div class="post-content">
+                <iframe src="sound-gallery.html" sandbox="allow-scripts allow-same-origin"></iframe>
+
+            </div>
+            <div class="post-actions">
+                <button class="like-btn"><span class="like-icon">♡</span></button>
+                <span class="like-count">0 likes</span>
+                <button class="comment-btn">💬</button>
+            </div>
+            <div class="comments"></div>
+            <div class="add-comment">
+                <input type="text" placeholder="Add a comment..." />
+                <button class="submit-comment">Post</button>
+            </div>
+        </div>
+
+
+
+        <!-- Post 4 -  -->
+        <div class="post">
+            <div class="post-header">
+                <img src="https://randomuser.me/api/portraits/women/56.jpg" alt="User profile" class="profile-pic" />
+                <span class="username">Sara Cordoba</span>
+            </div>
+            <div class="post-content">
+                <iframe src="geo 3-2 spanish.html" sandbox="allow-scripts allow-same-origin"></iframe>
+
+            </div>
+            <div class="post-actions">
+                <button class="like-btn"><span class="like-icon">♡</span></button>
+                <span class="like-count">0 likes</span>
+                <button class="comment-btn">💬</button>
+            </div>
+            <div class="comments"></div>
+            <div class="add-comment">
+                <input type="text" placeholder="Add a comment..." />
+                <button class="submit-comment">Post</button>
+            </div>
+        </div>
+    </main>
+
+
+    <!-- Post 5 -  -->
+    <div class="post">
+        <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/women/84.jpg" alt="User profile" class="profile-pic" />
+            <span class="username">Maria Legaz</span>
+        </div>
+        <div class="post-content">
+            <iframe style="max-width:100%"
+                src="https://wordwall.net/embed/12ad6f30f0a14b5db2742eda00de34d3?themeId=1&templateId=22&fontStackId=0"
+                width="500" height="380" frameborder="0" allowfullscreen></iframe>
+
+        </div>
+        <div class="post-actions">
+            <button class="like-btn"><span class="like-icon">♡</span></button>
+            <span class="like-count">0 likes</span>
+            <button class="comment-btn">💬</button>
+        </div>
+        <div class="comments"></div>
+        <div class="add-comment">
+            <input type="text" placeholder="Add a comment..." />
+            <button class="submit-comment">Post</button>
+        </div>
+    </div>
+
+
+
+    <!-- Post 6 -  -->
+    <div class="post">
+        <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/women/84.jpg" alt="User profile" class="profile-pic" />
+            <span class="username">Maria Legaz</span>
+        </div>
+        <div class="post-content">
+            <iframe src="geometry.html" sandbox="allow-scripts allow-same-origin"></iframe>
+
+        </div>
+        <div class="post-actions">
+            <button class="like-btn"><span class="like-icon">♡</span></button>
+            <span class="like-count">0 likes</span>
+            <button class="comment-btn">💬</button>
+        </div>
+        <div class="comments"></div>
+        <div class="add-comment">
+            <input type="text" placeholder="Add a comment..." />
+            <button class="submit-comment">Post</button>
+        </div>
+    </div>
+
+
+
+    <!-- Post 7 -  -->
+    <div class="post">
+        <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/women/84.jpg" alt="User profile" class="profile-pic" />
+            <span class="username">Maria Legaz</span>
+        </div>
+        <div class="post-content">
+            <iframe style="max-width:100%"
+                src="https://wordwall.net/embed/53715b80edf14c159723b63b1d9228e9?themeId=1&templateId=5&fontStackId=0"
+                width="500" height="380" frameborder="0" allowfullscreen></iframe>
+
+        </div>
+        <div class="post-actions">
+            <button class="like-btn"><span class="like-icon">♡</span></button>
+            <span class="like-count">0 likes</span>
+            <button class="comment-btn">💬</button>
+        </div>
+        <div class="comments"></div>
+        <div class="add-comment">
+            <input type="text" placeholder="Add a comment..." />
+            <button class="submit-comment">Post</button>
+        </div>
+    </div>
+
+
+
+    <!-- Post 8 -  -->
+    <div class="post">
+        <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/women/84.jpg" alt="User profile" class="profile-pic" />
+            <span class="username">Maria Legaz</span>
+        </div>
+        <div class="post-content">
+            <iframe src="angles.html" sandbox="allow-scripts allow-same-origin"></iframe>
+
+        </div>
+        <div class="post-actions">
+            <button class="like-btn"><span class="like-icon">♡</span></button>
+            <span class="like-count">0 likes</span>
+            <button class="comment-btn">💬</button>
+        </div>
+        <div class="comments"></div>
+        <div class="add-comment">
+            <input type="text" placeholder="Add a comment..." />
+            <button class="submit-comment">Post</button>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Post 9 -  -->
+    <div class="post">
+        <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/women/84.jpg" alt="User profile" class="profile-pic" />
+            <span class="username">Maria Legaz</span>
+        </div>
+        <div class="post-content">
+            <iframe style="max-width:100%"
+                src="https://wordwall.net/embed/c5212f9b4335463ca2660b558f7c3ae3?themeId=1&templateId=2&fontStackId=0"
+                width="500" height="380" frameborder="0" allowfullscreen></iframe>
+
+        </div>
+        <div class="post-actions">
+            <button class="like-btn"><span class="like-icon">♡</span></button>
+            <span class="like-count">0 likes</span>
+            <button class="comment-btn">💬</button>
+        </div>
+        <div class="comments"></div>
+        <div class="add-comment">
+            <input type="text" placeholder="Add a comment..." />
+            <button class="submit-comment">Post</button>
+        </div>
+    </div>
+
+
+
+
+
+
+    </main>
+
+
+
+
+    </main>
+
+    <script>
+        // Handle likes and comments for each post
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = 'current_user';
+            const posts = document.querySelectorAll('.post');
+
+            posts.forEach(post => {
+                const likeBtn = post.querySelector('.like-btn');
+                const likeIcon = post.querySelector('.like-icon');
+                const likeCountText = post.querySelector('.like-count');
+                const commentInput = post.querySelector('.add-comment input');
+                const submitCommentBtn = post.querySelector('.submit-comment');
+                const commentsContainer = post.querySelector('.comments');
+                let likeCount = parseInt(likeCountText.textContent) || 0;
+
+                // Toggle like functionality
+                likeBtn.addEventListener('click', () => {
+                    const liked = likeIcon.classList.toggle('liked');
+                    if (liked) {
+                        likeCount++;
+                        likeIcon.textContent = '♥';
+                    } else {
+                        likeCount--;
+                        likeIcon.textContent = '♡';
+                    }
+                    likeCountText.textContent = (likeCount === 1) ? '1 like' : `${likeCount} likes`;
+                });
+
+                // Comment functionality
+                submitCommentBtn.addEventListener('click', addComment);
+                commentInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addComment();
+                    }
+                });
+
+                function addComment() {
+                    const text = commentInput.value.trim();
+                    if (!text) return;
+                    const commentEl = document.createElement('p');
+                    commentEl.classList.add('comment');
+                    commentEl.innerHTML = `<span class="comment-user">${currentUser}</span> ${text}`;
+                    commentsContainer.appendChild(commentEl);
+                    commentInput.value = '';
+                }
+            });
+        });
+
+
+
+
+
+    </script>
+</body>
+
+</html>

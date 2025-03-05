@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ángulos Interactivos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #222;
+        }
+        #canvas-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40vh;
+            margin-top: 20px;
+        }
+        .info {
+            font-size: 16px;
+            margin-top: 20px;
+            color: #444;
+            padding: 8px;
+            background: #ffeb3b;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        select, input[type="range"] {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 2px solid #222;
+            background: #ffffff;
+            color: #222;
+            cursor: pointer;
+            margin: 5px;
+        }
+        #angleValue {
+            font-size: 16px;
+            font-weight: bold;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <h2>Explora los Ángulos Interactivos</h2>
+    <p>Usa el control deslizante para ajustar el ángulo y selecciona un tipo para más información.</p>
+    <select id="angleSelector" onchange="updateAngleFromDropdown()">
+        <option value="acute">Ángulo Agudo</option>
+        <option value="right">Ángulo Recto</option>
+        <option value="obtuse">Ángulo Obtuso</option>
+        <option value="straight">Ángulo Llano</option>
+    </select>
+    <br>
+    <input type="range" id="angleSlider" min="0" max="180" value="45" oninput="updateAngle()">
+    <p>Ángulo: <span id="angleValue">45</span>°</p>
+    <div class="info" id="angleInfo">Ajusta el ángulo con el control deslizante.</div>
+    <div id="canvas-container"></div>
+    
+    <script>
+        let angle = 45;
+
+        function setup() {
+            let canvas = createCanvas(300, 300);
+            canvas.parent("canvas-container");
+        }
+
+        function draw() {
+            background(255);
+            drawAngle(angle);
+        }
+
+        function drawAngle(currentAngle) {
+            let angleType = document.getElementById("angleSelector").value;
+            let info = document.getElementById("angleInfo");
+            document.getElementById("angleValue").textContent = currentAngle;
+            document.getElementById("angleSlider").value = currentAngle;
+            
+            translate(width / 2, height / 2);
+            stroke(0);
+            strokeWeight(3);
+            noFill();
+            
+            line(0, 0, 100, 0); // Base line
+            let endX = 100 * cos(radians(currentAngle));
+            let endY = -100 * sin(radians(currentAngle));
+            line(0, 0, endX, endY); // Angle line
+            arc(0, 0, 80, 80, 0, radians(currentAngle)); // Arc to show the angle
+            
+            if (angleType === "acute" && currentAngle < 90) {
+                info.innerHTML = "Un <b>ángulo agudo</b> mide menos de 90 grados. Se encuentra en estructuras arquitectónicas y diseño de ingeniería.";
+            } else if (angleType === "right" && currentAngle === 90) {
+                info.innerHTML = "Un <b>ángulo recto</b> mide exactamente 90 grados. Se encuentra en esquinas de edificios y en muchas figuras geométricas básicas.";
+            } else if (angleType === "obtuse" && currentAngle > 90 && currentAngle < 180) {
+                info.innerHTML = "Un <b>ángulo obtuso</b> mide más de 90 grados pero menos de 180 grados. Se usa en arquitectura y construcción de techos inclinados.";
+            } else if (angleType === "straight" && currentAngle === 180) {
+                info.innerHTML = "Un <b>ángulo llano</b> mide exactamente 180 grados y representa una línea recta.";
+            } else {
+                info.innerHTML = "Ajusta el control deslizante para cambiar el ángulo y ver su explicación.";
+            }
+        }
+
+        function updateAngle() {
+            angle = parseInt(document.getElementById("angleSlider").value);
+            redraw();
+        }
+
+        function updateAngleFromDropdown() {
+            let selectedType = document.getElementById("angleSelector").value;
+            if (selectedType === "acute") {
+                angle = 45;
+            } else if (selectedType === "right") {
+                angle = 90;
+            } else if (selectedType === "obtuse") {
+                angle = 120;
+            } else if (selectedType === "straight") {
+                angle = 180;
+            }
+            document.getElementById("angleSlider").value = angle;
+            redraw();
+        }
+    </script>
+</body>
+</html>

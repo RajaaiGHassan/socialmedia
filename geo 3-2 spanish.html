@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audio Text Synchronization with Manual Pause Timings</title>
+    <style>
+        body {
+            font-family: fedra sans, sans-serif;
+            padding: 30px;
+            background-color: #ffffff;
+            color: black;
+            line-height: 1.8;
+        }
+
+        h1 {
+            text-align: center;
+            color: #014a74;
+            text-shadow: #858383 1px 1px 3px;
+            margin: 0 auto 20px auto;
+            border-radius: 4px;
+            box-shadow: #898989 2px 2px 5px;
+            padding: 5px 10px;
+            background-color: #ffffff;
+            display: inline-block;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .audio-text-pair {
+            display: block;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        .audio-text-pair button {
+            font-family: fedra sans, sans-serif;
+            display: inline-block;
+            margin-right: 10px;
+            padding: 5px 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #000000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .audio-text-pair button:hover {
+            background-color: #ffffff;
+            color: #000000;
+            box-shadow: #000000 2px 2px 5px;
+        }
+
+        .text-container {
+            font-size: 20px;
+            display: inline;
+        }
+
+        span {
+            display: inline;
+            margin-right: 0;
+            padding: 3px;
+            border-radius: 2px;
+            transition: all 0.1s ease;
+            font-weight: inherit;
+            background: none;
+        }
+
+        span.highlight {
+            background-color: #ffffff;
+            box-shadow: #909090 1px 1px 0px;
+            color: #014a74;
+            font-weight: bold;
+            transition: all 0.1s ease-in-out;
+            border-radius: 4px;
+            border: #014a74 1px solid;
+        }
+
+        span.default {
+            background-color: transparent;
+            color: inherit;
+            font-weight: normal;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>LOS FUSOS HORARIOS</h1>
+
+    <!-- 
+    HOW TO ADD AUDIO & TEXT PAIRS:
+    
+    1. Copy the entire <div class="audio-text-pair"> block below and paste it in the body where needed.
+    2. In the <audio> tag, set the "src" attribute to your audio file URL.
+       Optionally, use the "data-length" attribute to manually specify the total duration of that audio in seconds.
+    3. Inside the <div class="text-container">, each word (or punctuation) is wrapped in a <span>.
+       For spoken words, leave them without extra timing attributes.
+       For a pause (silence), such as after a period where nothing is pronounced, add:
+         - data-manual-start="X"  (the exact time in seconds when the pause starts)
+         - data-manual-end="Y"    (the exact time in seconds when the pause ends)
+       These manual timings override the automatic calculation for that span.
+       
+    EXAMPLE:
+    ---------------------------------------------------------------
+    <div class="audio-text-pair">
+      <button>Play</button>
+      Set data-length to the total duration (in seconds) if needed -->
+
+    <!-- Seventh audio-text pair -->
+
+    <div class="audio-text-pair">
+        <button>Play</button>
+        <audio data-length="2.7" src="1.m4a"></audio>
+        <div class="text-container">
+            <span>Cuando</span>
+            <span>en</span>
+            <span>oriente</span>
+            <span>es</span>
+            <span>de</span>
+            <span>día</span>
+            <span>en</span>
+            <span>occidente</span>
+            <span>es</span>
+            <span>de</span>
+            <span>noche.</span>
+        </div>
+    </div>
+
+    <div class="audio-text-pair">
+        <button>Play</button>
+        <audio data-length="5.0" src="2.m4a"></audio>
+        <div class="text-container">
+            <span>La</span>
+            <span>Tierra</span>
+            <span>se</span>
+            <span>divide</span>
+            <span>en</span>
+            <span>24</span>
+            <span>husos</span>
+            <span>horarios</span>
+            <span>para</span>
+            <span>calcular</span>
+            <span>la</span>
+            <span>diferencia</span>
+            <span>horaria</span>
+            <span>entre</span>
+            <span>países.</span>
+        </div>
+    </div>
+
+    <div class="audio-text-pair">
+        <button>Play</button>
+        <audio data-length="2.7" src="3.m4a"></audio>
+        <div class="text-container">
+            <span>Los</span>
+            <span>husos</span>
+            <span>horarios</span>
+            <span>también</span>
+            <span>se</span>
+            <span>llaman</span>
+            <span>zonas</span>
+            <span>horarias.</span>
+        </div>
+    </div>
+
+    <div class="audio-text-pair">
+        <button>Play</button>
+        <audio data-length="3.4" src="4.m4a"></audio>
+        <div class="text-container">
+            <span>Los</span>
+            <span>países</span>
+            <span>que</span>
+            <span>tienen</span>
+            <span>el</span>
+            <span>mismo</span>
+            <span>huso</span>
+            <span>horario</span>
+            <span>tienen</span>
+            <span>la</span>
+            <span>misma</span>
+            <span>hora.</span>
+        </div>
+    </div>
+
+    <div class="audio-text-pair">
+        <button>Play</button>
+        <audio data-length="5.7" src="5.m4a"></audio>
+        <div class="text-container">
+            <span>El</span>
+            <span>meridiano</span>
+            <span>de</span>
+            <span>Greenwich</span>
+            <span>se</span>
+            <span>utiliza</span>
+            <span>como</span>
+            <!-- For the punctuation (period) below, manually specify its exact timing -->
+            <span data-manual-start="2.8" data-manual-end="3.5">referencia.</span>
+            <span>Es</span>
+            <span>el</span>
+            <span>meridiano</span>
+            <span>0º.</span>
+        </div>
+    </div>
+
+    <h1>EL MOVIMIENTO DE TRASLACIÓN</h1>
+
+    <div class="audio-text-pair">
+        <button>Play</button>
+        <audio data-length="5.0" src="6.m4a"></audio>
+        <div class="text-container">
+            <span>Es</span>
+            <span>la</span>
+            <span>trayectoria</span>
+            <span>que</span>
+            <span>hace</span>
+            <span>la</span>
+            <span>Tierra</span>
+            <span>alrededor</span>
+            <span>del</span>
+            <!-- For the punctuation (period) below, manually specify its exact timing -->
+            <span data-manual-start="2.8" data-manual-end="3.2">Sol.</span>
+            <span>Su</span>
+            <span>órbita</span>
+            <span>tiene</span>
+            <span>forma</span>
+            <span>elíptica.</span>
+        </div>
+    </div>
+
+    <div class="audio-text-pair">
+        <button>Play</button>
+        <audio data-length="4.7" src="7.m4a"></audio>
+        <div class="text-container">
+            <span>La</span>
+            <span>Tierra</span>
+            <span>tarda</span>
+            <span>365</span>
+            <span>días</span>
+            <span>y</span>
+            <span>6</span>
+            <span>horas</span>
+            <span>en</span>
+            <span>dar</span>
+            <span>una</span>
+            <span>vuelta</span>
+            <span>completa.</span>
+        </div>
+    </div>
+
+    <div class="audio-text-pair">
+        <button>Play</button>
+        <audio data-length="6.0" src="8.m4a"></audio>
+        <div class="text-container">
+            <span>El</span>
+            <span>año</span>
+            <span>que</span>
+            <span>tarda</span>
+            <span>366</span>
+            <span>días</span>
+            <span>en</span>
+            <span>lugar</span>
+            <span>de</span>
+            <span>365</span>
+            <span>se</span>
+            <span>llama</span>
+            <span>año</span>
+            <span>traspaso.</span>
+        </div>
+    </div>
+
+    <div class="audio-text-pair">
+        <button>Play</button>
+        <audio data-length="4.8" src="9.m4a"></audio>
+        <div class="text-container">
+            <span>El</span>
+            <span>movimiento</span>
+            <span>de</span>
+            <span>traslación</span>
+            <span>y</span>
+            <span>la</span>
+            <span>inclinación</span>
+            <span>de</span>
+            <span>la</span>
+            <span>Tierra</span>
+            <span>dan</span>
+            <span>lugar</span>
+            <span>a</span>
+            <span>las</span>
+            <span>estaciones</span>
+            <span>del</span>
+            <span>año.</span>
+        </div>
+    </div>
+
+
+    <!-- Add additional audio-text pairs here by duplicating the blocks above -->
+
+    <script>
+        /**
+         * clientSideAlign:
+         * Processes an array of spans in a text container.
+         *
+         * - For spans with manual timings (data-manual-start and data-manual-end),
+         *   it uses those exact values.
+         * - For groups of consecutive spans without manual timings, it divides the
+         *   available time evenly.
+         *
+         * The available time is determined by the total audio duration (from the
+         * audio element’s data-length attribute or its duration property).
+         */
+        function clientSideAlign(audio, spans) {
+            return new Promise((resolve) => {
+                // Get total duration from the data-length attribute (if provided) or the audio's duration.
+                const customDuration = parseFloat(audio.dataset.length);
+                const totalDuration = !isNaN(customDuration) ? customDuration : (audio.duration || 2);
+
+                let currentTime = 0;
+                let alignment = [];
+                let i = 0;
+
+                while (i < spans.length) {
+                    // Check if the current span has manual timing attributes.
+                    if (spans[i].dataset.manualStart !== undefined && spans[i].dataset.manualEnd !== undefined) {
+                        const start = parseFloat(spans[i].dataset.manualStart);
+                        const end = parseFloat(spans[i].dataset.manualEnd);
+                        alignment.push({
+                            word: spans[i].textContent.trim(),
+                            start: start,
+                            end: end
+                        });
+                        // Update currentTime to the end of the manual timing.
+                        currentTime = end;
+                        i++;
+                    } else {
+                        // Group consecutive spans without manual timings.
+                        const blockStart = currentTime;
+                        const blockStartIndex = i;
+                        while (i < spans.length && (spans[i].dataset.manualStart === undefined || spans[i].dataset.manualEnd === undefined)) {
+                            // If we encounter a span that later might have manual timing, we break.
+                            if (spans[i].dataset.manualStart !== undefined && spans[i].dataset.manualEnd !== undefined) break;
+                            i++;
+                        }
+                        // Determine the block end:
+                        // If the next span has manual timing, use its manual start time;
+                        // otherwise, use the totalDuration.
+                        let blockEnd = totalDuration;
+                        if (i < spans.length && spans[i].dataset.manualStart !== undefined) {
+                            blockEnd = parseFloat(spans[i].dataset.manualStart);
+                        }
+                        const blockCount = i - blockStartIndex;
+                        const blockDuration = blockEnd - blockStart;
+                        const wordDuration = blockCount > 0 ? blockDuration / blockCount : 0;
+
+                        for (let j = blockStartIndex; j < i; j++) {
+                            const start = blockStart + (j - blockStartIndex) * wordDuration;
+                            const end = start + wordDuration;
+                            alignment.push({
+                                word: spans[j].textContent.trim(),
+                                start: parseFloat(start.toFixed(2)),
+                                end: parseFloat(end.toFixed(2))
+                            });
+                        }
+                        currentTime = blockEnd;
+                    }
+                }
+                resolve(alignment);
+            });
+        }
+
+        // Update alignment for a given audio-text pair.
+        function autoAlignAudioTextPair(pair) {
+            const audio = pair.querySelector("audio");
+            const textContainer = pair.querySelector(".text-container");
+            const spans = Array.from(textContainer.querySelectorAll("span"));
+
+            clientSideAlign(audio, spans)
+                .then(data => {
+                    spans.forEach((span, index) => {
+                        if (data[index]) {
+                            span.dataset.start = data[index].start;
+                            span.dataset.end = data[index].end;
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Alignment error:', error);
+                });
+        }
+
+        // Set up play/pause and sync highlighting for each audio-text pair.
+        function setupAudioTextPair(pair) {
+            const playButton = pair.querySelector("button");
+            const audio = pair.querySelector("audio");
+            const textContainer = pair.querySelector(".text-container");
+
+            playButton.addEventListener("click", () => {
+                if (audio.paused) {
+                    audio.play();
+                    playButton.textContent = "Pause";
+                } else {
+                    audio.pause();
+                    playButton.textContent = "Play";
+                }
+            });
+
+            audio.addEventListener("timeupdate", () => {
+                const currentTime = audio.currentTime;
+                textContainer.querySelectorAll("span").forEach(span => {
+                    const start = parseFloat(span.dataset.start);
+                    const end = parseFloat(span.dataset.end);
+                    if (!isNaN(start) && !isNaN(end) && currentTime >= start && currentTime <= end) {
+                        span.classList.add("highlight");
+                        span.classList.remove("default");
+                    } else {
+                        span.classList.remove("highlight");
+                        span.classList.add("default");
+                    }
+                });
+            });
+
+            audio.addEventListener("ended", () => {
+                playButton.textContent = "Play";
+                textContainer.querySelectorAll("span").forEach(span => {
+                    span.classList.remove("highlight");
+                    span.classList.add("default");
+                });
+            });
+
+            // Automatically align this pair.
+            autoAlignAudioTextPair(pair);
+        }
+
+        // Initialize all audio-text pairs on the page.
+        document.querySelectorAll(".audio-text-pair").forEach(setupAudioTextPair);
+
+
+
+
+        document.querySelectorAll("span").forEach((span) => {
+            const boldAndColoredWords = ["24", "fusos", "horaris", "zones", "horàries.", "meridià", "Greenwich", "0˚", "el·líptica.", "any", "traspàs.", "estacions", "l’any.",];
+            const coloredOnlyWords = ["diferència", "horària",];
+            const text = span.textContent;
+
+            // Check for boldAndColoredWords and apply styles
+            boldAndColoredWords.forEach((word) => {
+                if (text.includes(word)) {
+                    span.innerHTML = text.replace(
+                        word,
+                        `<span style="font-weight: bold; color: #014a74;">${word}</span>`
+                    );
+                }
+            });
+
+            // Check for coloredOnlyWords and apply styles
+            coloredOnlyWords.forEach((word) => {
+                if (text.includes(word)) {
+                    span.innerHTML = text.replace(
+                        word,
+                        `<span style="color: #D81B60;">${word}</span>`
+                    );
+                }
+            });
+        });
+
+
+    </script>
+</body>
+
+</html>
